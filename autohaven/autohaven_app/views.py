@@ -442,7 +442,10 @@ def manage_seller(request, id):
             if form.is_valid():
                 userToUpdate = User.objects.get(username=seller.user.username)
                 userToUpdate.email = form.cleaned_data['email']
+                userToUpdate.first_name = form.cleaned_data['first_name']
+                userToUpdate.last_name = form.cleaned_data['last_name']
                 seller.company_name = form.cleaned_data['company_name']
+
                 userToUpdate.save()
                 seller.save()
                 confirmationConfig["showConf"] = True
