@@ -1,21 +1,114 @@
 {% extends 'base.html' %}
 {% block title %}
-    {% if listing is None %}New Listing{% else %}Listing ID: {{ listing.id }}{% endif %}
+{% if listing is None %}New Listing{% else %}Listing ID: {{ listing.id }}{% endif %}
 {% endblock %}
 {% block pageStyles %}
-    {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'profile/css/styles.css' %}">
-    <link rel="stylesheet" type="text/css" href="{% static 'listings/css/new_listing.css' %}">
-    <script src="{% static 'listings/js/create_update_listing.js' %}"></script>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'profile/css/styles.css' %}">
+<link rel="stylesheet" type="text/css" href="{% static 'listings/css/new_listing.css' %}">
+<script src="{% static 'listings/js/create_update_listing.js' %}"></script>
 {% endblock %}
 {% block content %}
-    <section class="content">
-    <form id="new-listing-form" action="{% if listing %}{% url 'manage-listing' listing.id %}{% else %}{% url 'new-listing' %}{% endif %}" method="post" enctype="multipart/form-data">
+<section class="content">
+    {% if user.is_superuser %}
+    <!-- Super User Version -->
+    <div class="superuser-listing-container">
+        <div class="row">
+            <div class="column listing-info-column">
+                <h1>Listing ID: {{ listing.id }}</h1>
+                <div class="row">
+                    <div class="column">
+                        <label for="title">Title:</label>
+                        <input type="text" id="title" value="{{ listing.title }}" readonly class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <label for="brand">Brand:</label>
+                        <input type="text" id="brand" value="{{ listing.brand }}" readonly class="form-control">
+                    </div>
+                    <div class="column">
+                        <label for="model">Model:</label>
+                        <input type="text" id="model" value="{{ listing.model }}" readonly class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <label for="year">Year:</label>
+                        <input type="text" id="year" value="{{ listing.year }}" readonly class="form-control">
+                    </div>
+                    <div class="column">
+                        <label for="body_type">Body Type:</label>
+                        <input type="text" id="body_type" value="{{ listing.body_type }}" readonly class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <label for="engine_type">Engine Type:</label>
+                        <input type="text" id="engine_type" value="{{ listing.engine_type }}" readonly class="form-control">
+                    </div>
+                    <div class="column" {% if listing.type == Listing.NEW %} style="display: none;" {% endif  %}>
+                        <label for="mileage">Mileage:</label>
+                        <input type="text" id="mileage" value="{{ listing.mileage }}" readonly class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <label for="price">Price:</label>
+                        <input type="text" id="price" value="{{ listing.price }}" readonly class="form-control">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <label for="description">Description:</label>
+                        <textarea id="description" readonly class="form-control">{{ listing.description }}</textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="column">
+                        <button id="delete-btn" name="delete" type="submit" class="button button-red">Delete Listing</button>
+                    </div>
+                </div>
+            </div>
+            <script>
+                function changeImage(url) {
+                    document.getElementById('main-image').src = url;
+                }
+            </script>
+        
+            
+            <!-- Images Column -->
+            <div class="column images-column">
+                <div class="image-section">
+                    {% if listing.images.exists %}
+                    <div id="main-image-container">
+                        <img src="{{ listing.images.first.imagepath.url }}" alt="{{ listing.title }}" class="main-image"
+                            id="main-image">
+                    </div>
+                    <div id="thumbnail-images-container" class="thumbnail-container">
+                        {% for image in listing.images.all %}
+                        <img src="{{ image.imagepath.url }}" alt="{{ listing.title }}" class="thumbnail"
+                            onclick="changeImage('{{ image.imagepath.url }}')">
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p>No images available</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <!-- Regular User Version -->
+    <form id="new-listing-form"
+        action="{% if listing %}{% url 'manage-listing' listing.id %}{% else %}{% url 'new-listing' %}{% endif %}"
+        method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="row">
             <div class="column">
                 <h1>{% if listing %}Listing ID: {{ listing.id }}{% else %}New Listing{% endif %}</h1>
-                <span>Fill in your listing information to {% if listing is None %}create a new listing{% else %}edit the current listing{% endif %}</span>
+                <span>Fill in your listing information to {% if listing is None %}create a new listing{% else %}edit the
+                    current listing{% endif %}</span>
                 <div class="row">
                     <div class="column">
                         {{ form.title.errors }}
@@ -53,7 +146,7 @@
                         {{ form.engine_type.label_tag }}
                         {{ form.engine_type }}
                     </div>
-                    
+
                     <div class="column" {% if form.type.value == Listing.NEW %} style="display: none " {% endif  %}>
                         {{ form.mileage.errors }}
                         {{ form.mileage.label_tag }}
@@ -104,10 +197,11 @@
                     <div class="column" id="main-image-container">
                     </div>
                 </div>
-                <div class="row" id="other-images-container">    
+                <div class="row" id="other-images-container">
                 </div>
             </div>
         </div>
     </form>
-    </section>
+    {% endif %}
+</section>
 {% endblock %}

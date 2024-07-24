@@ -1,79 +1,124 @@
+/* General Layout Styles */
+.content {
+  display: flex;
+  flex-direction: row; /* Ensure content and images are side by side */
+  gap: 2em; /* Space between content and images container */
+  flex-wrap: wrap; /* Allow wrapping for smaller screens */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Row and Column Layout */
 .row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 2em;
-    width: 100%;
-    button {
-      margin-top: 1em;
-      margin-bottom: 0;
-      padding: 1em;
-      width: 100%;
-      max-width: 100%;
-    }
-  }
-  
-  .column {
-    display: flex;
-    flex-direction: column;
-    flex-basis: 100%;
-    flex: 1;
-  }
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap; /* Prevent wrapping to keep elements in a single line */
+  gap: 2em;
+  width: 100%;
+}
 
-  #other-images-container {
-    max-width: 40vw;
-    overflow-x: auto;
-    align-self: center;
-    flex-wrap: nowrap;
-    img {
-      max-width: 13.3vw;
-    }
-  }
+.column {
+  display: flex;
+  flex-direction: column;
+  flex-basis: 100%; /* Allows columns to stack on smaller screens */
+  flex: 1;
+}
 
-  #images-container .row:first-of-type {
-    justify-content: center;
+/* Super User Layout */
+.superuser-listing-container {
+  display: flex;
+  flex-direction: row; /* Layout for superuser to have details and images side by side */
+  gap: 2em; /* Space between listing details and images */
+  width: 100%;
+}
 
-    .column:first-of-type {
-      img {
-        max-width: 40vw;
-        max-height: 20vw;
-      }
-    }
-  }
+.superuser-listing-container .listing-info-column {
+  flex: 2; /* Take up more space for listing details */
+}
 
+.superuser-listing-container .images-column {
+  flex: 1; /* Take up less space for images */
+}
 
-  #images-container {
-    justify-content: center;
-    flex-grow: 2;
-    span {
-      text-align: end;
-    }
+#main-image-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1em;
+}
 
-    .column {
-      flex-basis: auto;
-      flex: 0;
-    }
-  }
+.main-image {
+  max-width: 100%; /* Ensure image fits within container */
+  max-height: 40vw; /* Maintain aspect ratio and prevent overflow */
+}
 
-  .content {
-    flex-basis: 90%;
-    > * {
-        width: 100%;
-    }
+#thumbnail-images-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  overflow-y: auto; /* Allow vertical scrolling if thumbnails exceed container height */
+}
+
+.thumbnail {
+  max-width: 100%; /* Ensure thumbnail fits within container */
+  cursor: pointer;
+}
+
+/* Regular User Form Styles */
+#new-listing-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2em;
 }
 
 textarea {
-  resize: none;
+  resize: none; /* Prevent resizing of textarea */
 }
 
-form input,textarea {
-  max-width: initial;
+form input, textarea {
+  max-width: initial; /* Ensure inputs and textareas use available width */
 }
 
 input[type="file"] {
-  display: none;
+  display: none; /* Hide file input */
 }
 
 select {
-  display: none;
+  display: none; /* Hide select inputs */
+}
+
+/* Images Container Styling */
+#images-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex-grow: 1; /* Allow images container to grow */
+  margin-left: 1em; /* Space between details and images */
+}
+
+#images-container .row:first-of-type {
+  justify-content: center;
+}
+
+#other-images-container {
+  max-width: 80vw;
+  overflow-x: auto; /* Allow horizontal scrolling if thumbnails exceed container width */
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap; /* Prevent wrapping of images */
+  gap: 1em; /* Add space between images */
+}
+
+#other-images-container img {
+  max-width: 20vw; /* Adjust size of thumbnail images */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .content {
+      flex-direction: column; /* Stack details and images on smaller screens */
+  }
+
+  .superuser-listing-container {
+      flex-direction: column; /* Stack details and images on smaller screens */
+  }
 }

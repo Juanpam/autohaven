@@ -356,39 +356,57 @@ def new_listing(request):
     } | confirmationConfig
     return render(request, 'profile/create_edit_listing.html', context=context)
 
+
 @login_required()
 def manage_listing(request, listingId):
     confirmationConfig = {
-        "showConf" : False,
-        "confirmationTitle" : '',
-        "confirmationMessage" : '',
-        "confirmationButton" : '',
-        "confirmationRedirectURL" : '',
+        "showConf": False,
+        "confirmationTitle": '',
+        "confirmationMessage": '',
+        "confirmationButton": '',
+        "confirmationRedirectURL": '',
     }
+    
     listing = get_object_or_404(Listing, id=listingId)
-    if request.method == 'POST':
-        listingImages = listing.images.all()
-        if(listing):
-            if('delete' in request.POST):
-                # Creates copy of pk in memory to show page with modal and deleted listing information
+    
+    is_superuser = request.user.is_superuser
+    is_post_request = request.method == 'POST'
+    
+    if is_superuser:
+        # Superuser can only view or delete the listing
+        if is_post_request:
+            if 'delete' in request.POST:
+                listingId = listing.pk
+                listing.delete()
+                confirmationConfig['showConf'] = True
+                confirmationConfig['confirmationTitle'] = 'Listing removed'
+                confirmationConfig['confirmationMessage'] = 'The listing was successfully deleted'
+                confirmationConfig['confirmationButton'] = 'Back to My Profile'
+                confirmationConfig['confirmationRedirectURL'] = '/profile'
+        # For superusers, no form to edit the listing, just show the listing details
+        form = None
+    else:
+        # Non-superusers can manage listings as usual
+        if is_post_request:
+            listingImages = listing.images.all()
+            if 'delete' in request.POST:
                 listingId = listing.pk
                 listing.delete()
                 listing.pk = listingId
-                form = ListingForm(initial={'listingImages': list(listingImages.values()) }, instance=listing)
+                form = ListingForm(initial={'listingImages': list(listingImages.values())}, instance=listing)
                 confirmationConfig['showConf'] = True
                 confirmationConfig['confirmationTitle'] = 'Listing removed'
-                confirmationConfig['confirmationMessage'] = 'The listing was successfully delete'
+                confirmationConfig['confirmationMessage'] = 'The listing was successfully deleted'
                 confirmationConfig['confirmationButton'] = 'Back to My Profile'
                 confirmationConfig['confirmationRedirectURL'] = '/profile'
             else:
                 formData = request.POST.copy()
-                formData.update({ "type": listing.type })
+                formData.update({"type": listing.type})
                 form = ListingForm(formData, request.FILES, instance=listing)
-                if(form.is_valid()):
+                if form.is_valid():
                     form.instance.user = request.user
                     form.save()
-                    # print('listingImages', listingImages)
-                    form = ListingForm(initial={'listingImages': list(listingImages.values()) }, instance=listing)
+                    form = ListingForm(initial={'listingImages': list(listingImages.values())}, instance=listing)
                     confirmationConfig['showConf'] = True
                     confirmationConfig['confirmationTitle'] = 'Listing updated'
                     confirmationConfig['confirmationMessage'] = 'The changes you made have been saved to your listing'
@@ -396,11 +414,11 @@ def manage_listing(request, listingId):
                     confirmationConfig['confirmationRedirectURL'] = '/profile'
                 else:
                     print('form errors', form.errors)
-    else:
-        listingImages = listing.images.all()
-        form = ListingForm(initial={'listingImages': list(listingImages.values()) }, instance=listing)
+        else:
+            listingImages = listing.images.all()
+            form = ListingForm(initial={'listingImages': list(listingImages.values())}, instance=listing)
 
-    context = { 'form': form, 'listing': listing, 'Listing': Listing } | confirmationConfig
+    context = {'form': form, 'listing': listing, 'Listing': Listing} | confirmationConfig
     return render(request, 'profile/create_edit_listing.html', context=context)
 
 
@@ -536,4 +554,7 @@ def listing_detail(request,listing_id):
     } | confirmationConfig
 
     return render(request, 'listing_detail.html', context=context)
+
+def is_superuser(user):
+    return user.is_superuser
 
