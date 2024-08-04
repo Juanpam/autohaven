@@ -17,7 +17,6 @@
             <td class="username">{{ offer.user }}</td>
             <td class="price">${{ offer.offeredPrice }}</td>
             <td class="date">{{ offer.offeredDate|date:"M d" }}</td>
-            <td>{{ offer.status }}</td>
             <td>
                 <form method="post" action="{% url 'profile' %}" style="display:inline;">
                     {% csrf_token %}

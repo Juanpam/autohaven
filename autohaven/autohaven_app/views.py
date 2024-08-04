@@ -51,7 +51,7 @@ def password_reset_confirm(request,username):
                 user.save()
                 showConf = True
                 confirmationMessage = 'You successfully reset your password! You can now use this to log into your account.'
-                confirmationButton = 'Back to log in page'
+                confirmationButton = 'Back to Log In page'
                 confirmationTitle = 'Password changed.'
                 confirmationRedirectURL = reverse('login')
                 return render(request, 'password_reset_confirm.html',
@@ -96,7 +96,7 @@ def password_reset(request):
     except Exception as error:
         showConf = True
         confirmationMessage = 'There has been an error processing your password request.'
-        confirmationButton = 'Back to log in page'
+        confirmationButton = 'Back to Log In page'
         confirmationTitle = f'Error occurred. {error if settings.DEBUG else ''}'
         confirmationRedirectURL = reverse('login')
         return render(request, 'password_reset.html', {
@@ -203,7 +203,7 @@ def register(request):
             showConf = True
             confirmationTitle = "Your account is complete"
             confirmationMessage = "You successfully created an account"
-            confirmationButton = "Go to Login"
+            confirmationButton = "Go to Log In"
             confirmationRedirectURL = reverse('login')
             
         else:
@@ -475,7 +475,7 @@ def new_listing(request):
                 listing = form.save()
                 confirmationConfig['showConf'] = True
                 confirmationConfig['confirmationTitle'] = 'New listing uploaded'
-                confirmationConfig['confirmationMessage'] = 'Your listing has been successfully added to the catalog. You will receive a confirmation email shortly regarding your upload. You can view and edit this listing in the My Listings section'
+                confirmationConfig['confirmationMessage'] = 'Your listing has been successfully added to the catalog. You can view and edit this listing in the My Listings section'
                 confirmationConfig['confirmationButton'] = 'Back to My Profile'
                 confirmationConfig['confirmationRedirectURL'] = '/profile'
                 listingImages = listing.images.all()
@@ -523,7 +523,7 @@ def manage_listing(request, listingId):
                 form = ListingForm(initial={'listingImages': list(listingImages.values()) }, instance=listing, disabled=request.user.is_superuser)
                 confirmationConfig['showConf'] = True
                 confirmationConfig['confirmationTitle'] = 'Listing removed'
-                confirmationConfig['confirmationMessage'] = 'The listing was successfully delete'
+                confirmationConfig['confirmationMessage'] = 'The listing was successfully deleted.'
                 confirmationConfig['confirmationButton'] = 'Back to My Profile'
                 confirmationConfig['confirmationRedirectURL'] = '/profile'
             else:
@@ -537,7 +537,7 @@ def manage_listing(request, listingId):
                     form = ListingForm(initial={'listingImages': list(listingImages.values()) }, instance=listing, disabled=request.user.is_superuser)
                     confirmationConfig['showConf'] = True
                     confirmationConfig['confirmationTitle'] = 'Listing updated'
-                    confirmationConfig['confirmationMessage'] = 'The changes you made have been saved to your listing'
+                    confirmationConfig['confirmationMessage'] = 'The changes you made have been saved to your listing.'
                     confirmationConfig['confirmationButton'] = 'Back to My Profile'
                     confirmationConfig['confirmationRedirectURL'] = '/profile'
                 else:
@@ -615,7 +615,7 @@ def manage_seller(request, id):
                     seller.save()
                     confirmationConfig["showConf"] = True
                     confirmationConfig["confirmationTitle"] = 'Changes saved.'
-                    confirmationConfig["confirmationMessage"] = 'The changes you made have been saved to the seller profile!'
+                    confirmationConfig["confirmationMessage"] = 'The changes you made have been saved to the seller profile.'
                     confirmationConfig["confirmationButton"] =  'Back to My Profile'
                     confirmationConfig["confirmationRedirectURL"] = reverse('profile')
         else:
@@ -662,7 +662,7 @@ def upload_new_seller(request):
                 form.save()
                 confirmationConfig["showConf"] = True
                 confirmationConfig["confirmationTitle"] = 'New seller created'
-                confirmationConfig["confirmationMessage"] = 'The seller will receive an email with their login details and further information on how to get started and create their own password. You will receive a confirmation message shortly about your upload.'
+                confirmationConfig["confirmationMessage"] = 'You can send the seller their username and they can use the forgot password button on the Log In page to set their own secure password. '
                 confirmationConfig["confirmationButton"] =  'Back to My Profile'
                 confirmationConfig["confirmationRedirectURL"] = reverse('profile')
             else:
@@ -737,8 +737,8 @@ def listing_detail(request, listing_id):
                             'showConf': True,
                             'confirmationTitle': 'Insufficient Funds',
                             'confirmationMessage': 'You do not have enough credits in your account balance to purchase this vehicle.',
-                            'confirmationButton': 'Back to Catalog',
-                            'confirmationRedirectURL': '/catalog',
+                            'confirmationButton': 'Back to Listing',
+                            'confirmationRedirectURL': f'/catalog/listing/{listing_id}/',
                             'isError': False
                         })
 
