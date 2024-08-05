@@ -25,7 +25,8 @@ This document provides sources for the images used as placeholders for our Softw
 
 ### 6. Catalog Dummy Listing Tesla Model Y
 - **Source 1**: https://www.tesla.com/modely
-  
+
+
 ## Acknowledgements
 
 We would like to extend our gratitude to the artists and photographers whose work has greatly contributed to the visual appeal of our project. 
