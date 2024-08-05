@@ -64,9 +64,7 @@ function updateImagesText(customText) {
   if (!customText) {
     // Update images feedback text
     const number = imageElementsList.length;
-    textElement.innerHTML = number
-      ? `${number}/${maxImages} images uploaded`
-      : "";
+    textElement.innerHTML = `${number}/${maxImages} images uploaded`;
   } else {
     textElement.innerHTML = customText;
   }
@@ -98,17 +96,16 @@ function onImagesChange(filesInput) {
 }
 
 function loadListingImages(previousImages, mediaPrefix) {
-  if (previousImages) {
-    const previousImageElements = previousImages.map((previousImage) => {
+  const previousImageElements =
+    previousImages?.map((previousImage) => {
       const imgElement = document.createElement("img");
       imgElement.dataset.id = previousImage.id;
       imgElement.src = mediaPrefix + previousImage.imagepath;
       return imgElement;
-    });
+    }) || [];
 
-    imageElementsList.push(...previousImageElements);
-    drawImages(imageElementsList);
-  }
+  imageElementsList.push(...previousImageElements);
+  drawImages(imageElementsList);
 }
 
 function onSubmit(event, filesInput) {
