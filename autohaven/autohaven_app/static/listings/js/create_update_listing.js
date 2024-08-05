@@ -25,6 +25,7 @@ function onDelete(event) {
 let imageElementsList = [];
 let imagesToDelete = [];
 let isSuperUser = false;
+const maxImages = 6;
 
 function drawImages(imagesToDraw) {
   const mainImageContainer = document.getElementById("main-image-container");
@@ -56,32 +57,44 @@ function drawImages(imagesToDraw) {
   updateImagesText();
 }
 
-function updateImagesText() {
-  // Update images feedback text
-  const number = imageElementsList.filter(
-    (imgElement) => imgElement.file
-  ).length;
-  const text = document
+function updateImagesText(customText) {
+  const textElement = document
     .getElementById("text-images-container")
     .children.item(0);
-  text.innerHTML = number ? `${number} Images added successfully` : "";
+  if (!customText) {
+    // Update images feedback text
+    const number = imageElementsList.length;
+    textElement.innerHTML = number
+      ? `${number}/${maxImages} images uploaded`
+      : "";
+  } else {
+    textElement.innerHTML = customText;
+  }
 }
 
 function onImagesChange(filesInput) {
   const newImages = Array.from(filesInput.files);
-  const newImageElements = newImages.map((newImage) => {
-    const imgElement = document.createElement("img");
-    imgElement.file = newImage;
-    const fileReader = new FileReader();
-    fileReader.onload = (loadEvent) => {
-      imgElement.src = loadEvent.target.result;
-    };
-    fileReader.readAsDataURL(newImage);
-    return imgElement;
-  });
 
-  imageElementsList.push(...newImageElements);
-  drawImages(imageElementsList);
+  const imagesNumber = newImages.length + imageElementsList.length;
+  if (imagesNumber <= maxImages) {
+    const newImageElements = newImages.map((newImage) => {
+      const imgElement = document.createElement("img");
+      imgElement.file = newImage;
+      const fileReader = new FileReader();
+      fileReader.onload = (loadEvent) => {
+        imgElement.src = loadEvent.target.result;
+      };
+      fileReader.readAsDataURL(newImage);
+      return imgElement;
+    });
+
+    imageElementsList.push(...newImageElements);
+    drawImages(imageElementsList);
+  } else {
+    updateImagesText(
+      "Error: It's only possible to upload 6 images max. Remove some images before adding more."
+    );
+  }
 }
 
 function loadListingImages(previousImages, mediaPrefix) {
